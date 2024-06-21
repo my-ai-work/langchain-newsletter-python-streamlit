@@ -17,29 +17,35 @@ from langchain_community.document_loaders import UnstructuredURLLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings
-# ---------------------------------------------------------------------------
-# KEEP THESE IMPORTS FOR REFERENCE. SICK OF FREQUENT CHANGES
-# ---------------------------------------------------------------------------
 
 # Load environment variables from .env file
 load_dotenv()
+
 # Access the environment variable
 openai_api_key = os.getenv("OPENAI_API_KEY")
 
-# Load development moduels
+# Initialize LLM
+llm = ChatOpenAI(model_name='gpt-3.5-turbo', temperature=0.6)
+
+# Define the prompt template
+prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", "You are a friendly AI assistant."),
+        MessagesPlaceholder(variable_name="chat_history"),
+        ("human", "{input}")
+    ]
+)
+
+# Setup embeddings
+embeddings = OpenAIEmbeddings()
+
 from utils.search_utils import search_duckduckgo_with_details
 from utils.pick_best_urls_utils import pick_best_articles_urls
-from utils.extract_url_content_utils import extract_url_content
-from utils.summerize_content_utils import summerize_content
-from utils.generate_newsletter_utils import generate_newsletter
-
 
 if __name__ == "__main__":
-    # search query
-    search_query = "Hunter Biden convicted"
-    # search results
+    search_query = "Ukrane war"
     search_results = search_duckduckgo_with_details(search_query)
-    # display results
+    
     print("Search Results:")
     # print(search_results)
     for result in search_results:
@@ -47,21 +53,7 @@ if __name__ == "__main__":
         print(f"Link: {result['link']}")
         print(f"Snippet: {result['snippet']}\n")
     
-    # collect best 3 urls as a list
     best_urls = pick_best_articles_urls(search_results, search_query)
-    # display 3 urls
+    
     print("Best URLs:")
     print(best_urls)
-
-    # extract url content
-    faiss_db = extract_url_content(best_urls)
-
-    # summerize vector db content
-    summeries = summerize_content(faiss_db, search_query)
-
-    # generate newsletter
-    generate_newsletter(summeries, search_query)
-
-
-
-
