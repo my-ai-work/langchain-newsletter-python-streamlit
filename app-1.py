@@ -42,46 +42,41 @@ def main():
     search_query = st.text_input("Enter a topic...")
 
     if search_query:
-        # Step 1: Search results
+        print(search_query)
         with st.spinner(f"Generating newsletter for {search_query}"):
             st.write("Generating newsletter for: ", search_query)
 
+             # search results
             search_results = search_duckduckgo_with_details(search_query)
+            # display results
             print("Search Results:")
+            # Display the log messages
             st.markdown("### Displaying Search Results...")
             st.write(search_results, language='python')
 
-        # Step 2: Collect best articles
+        # Add spinner for the next step
         with st.spinner("Collecting best articles..."):
+            # collect best 3 urls as a list
             best_urls = pick_best_articles_urls(search_results, search_query)
-            print("Best URLs:")
+            # display 3 urls
+            print("Best 3 URLs:")
             st.markdown("### Best URLs:")
             st.write(best_urls, language='python')
 
-        # Step 3: Extract content and create FAISS vector DB
-        with st.spinner("Extracting content from URLs and creating FAISS vector DB..."):
-            faiss_db = extract_url_content(best_urls)
-            st.success("FAISS vector DB created!")
+            # Step 3: Extract content and create FAISS vector DB
+            with st.spinner("Extracting content from URLs and creating FAISS vector DB..."):
+                faiss_db = extract_url_content(best_urls)
+                st.success("FAISS vector DB created!")
 
-        # Step 4: Summarize vector DB content
-        with st.spinner("Summarizing content from FAISS vector DB..."):
-            summaries = summerize_content(faiss_db, search_query)
-            print("The Summary of the online data:")
-            st.markdown("### The Summary of the Online Data:")
-            st.write(summaries, language='python')
+            # Step 4: Summarize vector DB content
+            with st.spinner("Summarizing content from FAISS vector DB..."):
+                summaries = summerize_content(faiss_db, search_query)
+                print("The Summary of the online data:")
+                st.markdown("### The Summary of the Online Data:")
+                st.write(summaries, language='python')
 
-        # Step 5: Generate newsletter
-        with st.spinner("Generating the newsletter..."):
-            the_newsletter = generate_newsletter(summaries, search_query)
-            st.markdown(
-                f"""
-                <div style="background-color: #e3e3e3; padding: 10px; border-radius: 5px;">
-                    <h3>The Generated Newsletter:</h3>
-                    <p>{the_newsletter}</p>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+            # generate newsletter
+            # the_news_letter = generate_newsletter(summeries, search_query)
 
 
 if __name__ == "__main__":

@@ -7,7 +7,7 @@ def summerize_content(db, query, k=4):
     # collecting docs based on similarity search
     docs = db.similarity_search(query, k=k)
 
-    # join the content of the page_content attribute from eac document...
+    # join the content of the page_content attribute from each document...
     docs_page_content = " ".join([d.page_content for d in docs])
 
     # creating the model
@@ -43,7 +43,7 @@ def summerize_content(db, query, k=4):
     summerizer_chain: Runnable = prompt_template | llm | StrOutputParser()
 
     # Create input for the chain
-    input_data = {"docs": docs, "query": query}
+    input_data = {"docs": docs_page_content, "query": query}
 
     # Invoke the chain
     result = summerizer_chain.invoke(input_data)

@@ -9,7 +9,7 @@ def generate_newsletter(summries, query):
     summaries_str = str(summries)
 
     # creating the model
-    llm = ChatOpenAI(model="gpt-3.5-turbo", 
+    llm = ChatOpenAI(model="gpt-4o", 
                      temperature=.7)
     # prompt engineering
     template = """
@@ -23,7 +23,7 @@ def generate_newsletter(summries, query):
         
         Make sure to write it informally - no "Dear" or any other formalities.  Start the newsletter with
         `Hi All!
-          Here is your weekly dose of the Tech Newsletter, a list of what I find interesting
+          Here is your weekly dose of the Tech  [CHANGE THIS ACCORDING TO {query}]  Newsletter, a list of what I find interesting
           and worth and exploring.`
           
         Make sure to also write a backstory about the topic - make it personal, engaging and lighthearted before
@@ -39,11 +39,13 @@ def generate_newsletter(summries, query):
         
         If there are books, or products involved, make sure to add amazon links to the products or just a link placeholder.
         
-        As a signoff, write a clever quote related to learning, general wisdom, living a good life.  Be creative with this one - and then,
-        Sign with "The Moose 
+        As a signoff, write a clever quote (FORMAT IN MARKDOWN) related to learning, general wisdom, living a good life.  Be creative with this one - and then,
+        Sign with (replace the "Sign with" with "Sincerely,")
+        "The Moose 
           - The AI Guru"
         
-        NEWSLETTER-->:
+          
+        NEWSLETTER (GENERATE THE OUTPUT IN MARKDOWN FORMAT (but don't use markdown at the beginning) with proper headers like "## for h2, > for quotes etc.")-->:
     """
 
     # Prepping the Prompt Template
@@ -63,4 +65,6 @@ def generate_newsletter(summries, query):
     result = newsletter_chain.invoke(input_data)
 
     # display the news letter
-    print(result)
+    # print('=====================================================================')
+    # print(result)
+    return result
